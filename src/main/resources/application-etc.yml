@@ -1,0 +1,23 @@
+spring:
+  config:
+    activate:
+      on-profile: on-restdocs
+
+springdoc:
+  swagger-ui:
+    url: /docs/api.json
+    disable-swagger-default-url: true
+    operations-sorter: method
+  cache:
+    disabled: true
+---
+
+spring:
+  config:
+    activate:
+      on-profile: off-restdocs
+
+springdoc:
+  swagger-ui:
+    enabled: false
+---

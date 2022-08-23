@@ -1,0 +1,85 @@
+plugins {
+    id 'org.springframework.boot' version '2.7.3'
+    id 'io.spring.dependency-management' version '1.0.13.RELEASE'
+    id 'java'
+    id 'com.epages.restdocs-api-spec' version '0.16.0'
+}
+
+group = 'cj.task'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // spring boot
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+
+    // database
+    runtimeOnly 'mysql:mysql-connector-java'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.0'
+
+    // lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    // mapstruct
+    implementation 'org.mapstruct:mapstruct:1.5.2.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.2.Final'
+    testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.5.2.Final'
+
+    // swagger + restdocs
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.10'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.16.2'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+clean.doLast {
+    file('out').deleteDir()
+}
+
+openapi3 {
+    def serverDomain = 'http://localhost:8080'
+    def profile = System.properties['spring.profiles.active']
+
+    if (profile == 'dev') {
+        serverDomain = ""
+    }
+
+    title = 'Sleact API Docs'
+    description = 'Sleact API Docs'
+    version = '1.0.0'
+    format = 'json'
+    outputFileNamePrefix = 'Sleact_API_Docs'
+    tagDescriptionsPropertiesFile = 'src/docs/tag-descriptions.yml'
+}
+
+tasks.register('copyRestDocs') {
+    dependsOn ':openapi3'
+    doLast {
+        copy {
+            from file('build/api-spec')
+            into 'src/main/resources/static/docs'
+        }
+    }
+}
