@@ -35,17 +35,15 @@ https://github.com/ZeroCho/sleact
 |   `-- enums
 |-- configuration
 |-- core
-|   |-- channel
-|   |   |-- controller
-|   |   |-- dto
-|   |   |   |-- response
-|   |   |   `-- request
-|   |   |-- mapper
-|   |   |-- repositoryservice
-|   |   `-- service
 |   |-- user
+|   |   |-- controller
+|   |   |   `-- dto
+|   |   |       |-- response
+|   |   |       `-- request
+|   |   |-- mapper
+|   |   `-- service
+|   |       `-- repositoryservice
 |   `-- workspace
-`-- persistence
-    |-- entity
-    `-- repository
+|-- entity
+`-- repository
 ```

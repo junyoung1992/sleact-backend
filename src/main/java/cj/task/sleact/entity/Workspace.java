@@ -1,4 +1,4 @@
-package cj.task.sleact.persistence.entity;
+package cj.task.sleact.entity;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -18,6 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +26,8 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "channel")
-public class Channel extends BaseDate {
+@Table(name = "workspace")
+public class Workspace extends BaseDate {
 
     @Id
     @GeneratedValue
@@ -34,26 +35,40 @@ public class Channel extends BaseDate {
 
     @NotBlank
     @Length(max = 30)
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false, unique = true, length = 30)
     String name;
 
-    @Column(name = "private")
-    Boolean privates = false;
+    @NotBlank
+    @Length(max = 30)
+    @Column(nullable = false, unique = true, length = 30)
+    String url;
+
+    LocalDateTime deletedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "workspace_id", referencedColumnName = "id")
-    Workspace workspace;
+    @JoinColumn(name = "owner_id", referencedColumnName = "id")
+    User owner;
 
-    @OneToMany(mappedBy = "channel")
-    List<ChannelMember> members = new ArrayList<>();
+    @OneToMany(mappedBy = "workspace")
+    List<WorkspaceMember> members = new ArrayList<>();
+
+    @OneToMany(mappedBy = "workspace")
+    List<Channel> channels = new ArrayList<>();
 
     @Builder(builderClassName = "createBuilder", builderMethodName = "createBuilder")
-    public Channel(String name, Workspace workspace) {
-        Assert.hasText(name, "Channel name must be not blank");
-        Assert.notNull(workspace, "Channel workspace must be not null");
+    public Workspace(String name, String url, User owner) {
+        Assert.hasText(name, "Workspace name must be not blank");
+        Assert.hasText(url, "Workspace url must be not blank");
+        Assert.notNull(owner, "Workspace owner must be not null");
 
         this.name = name;
-        this.workspace = workspace;
+        this.url = url;
+        setOwner(owner);
+    }
+
+    private void setOwner(User owner) {
+        this.owner = owner;
+        owner.getOwned().add(this);
     }
 
 }

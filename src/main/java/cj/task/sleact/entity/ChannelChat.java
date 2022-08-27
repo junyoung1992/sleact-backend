@@ -1,4 +1,4 @@
-package cj.task.sleact.persistence.entity;
+package cj.task.sleact.entity;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -20,8 +20,8 @@ import javax.validation.constraints.NotBlank;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "dm")
-public class Dm extends BaseDate {
+@Table(name = "channel_chat")
+public class ChannelChat extends BaseDate {
 
     @Id
     @GeneratedValue
@@ -30,18 +30,14 @@ public class Dm extends BaseDate {
     @Lob
     @NotBlank
     @Column(nullable = false)
-    String text;
+    String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "workspace_id", referencedColumnName = "id")
-    Workspace workspace;
+    @JoinColumn(name = "channel_id", referencedColumnName = "id")
+    Channel channel;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sender_id", referencedColumnName = "id")
-    User sender;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "receiver_id", referencedColumnName = "id")
-    User receiver;
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    User user;
 
 }

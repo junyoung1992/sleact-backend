@@ -2,7 +2,7 @@ package cj.task.sleact.restdocs.core.workspace;
 
 import cj.task.sleact.common.constants.ApiUrlConstants;
 import cj.task.sleact.core.workspace.controller.WorkspaceController;
-import cj.task.sleact.core.workspace.dto.response.WorkspaceInfoRes;
+import cj.task.sleact.core.workspace.controller.dto.response.WorkspaceInfoRes;
 import cj.task.sleact.core.workspace.service.WorkspaceService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.SimpleType;
@@ -47,11 +47,12 @@ class WorkspaceControllerTest {
     @DisplayName("User가 속한 Workspace 조회")
     public void getWorkspaceInfoByUserId() throws Exception {
         // given
+        Long id = 1L;
         Long ownerId = 1L;
         String name = "workspace_test";
         String url = "test.workspace.com";
-        WorkspaceInfoRes response = new WorkspaceInfoRes(name, url, ownerId);
-        given(workspaceService.findWorkspaceInfoByUserId(anyLong())).willReturn(List.of(response));
+        WorkspaceInfoRes response = new WorkspaceInfoRes(id, name, url, ownerId);
+        given(workspaceService.findWorkspacesBy(anyLong())).willReturn(List.of(response));
 
         // when
         ResultActions result = mockMvc.perform(get(ApiUrlConstants.Workspace.BASE_URL));
@@ -59,6 +60,7 @@ class WorkspaceControllerTest {
         // then
         result.andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(id))
                 .andExpect(jsonPath("$[0].name").value(name))
                 .andExpect(jsonPath("$[0].url").value(url))
                 .andExpect(jsonPath("$[0].ownerId").value(ownerId))
@@ -72,6 +74,7 @@ class WorkspaceControllerTest {
                                 .tag("Workspace")
                                 .responseSchema(schema("WorkspaceInfoRes"))
                                 .responseFields(
+                                        fieldWithPath("[].id").type(SimpleType.NUMBER).description("워크스페이스 ID"),
                                         fieldWithPath("[].name").type(SimpleType.STRING).description("워크스페이스 이름"),
                                         fieldWithPath("[].url").type(SimpleType.STRING).description("워크스페이스 주소"),
                                         fieldWithPath("[].ownerId").type(SimpleType.NUMBER).description("워크스페이스 생성자 ID")

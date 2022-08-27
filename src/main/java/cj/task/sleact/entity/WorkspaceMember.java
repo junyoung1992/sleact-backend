@@ -1,4 +1,4 @@
-package cj.task.sleact.persistence.entity;
+package cj.task.sleact.entity;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -15,30 +14,32 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import java.time.LocalDateTime;
 
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "channel_member", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "channel_id"})})
-public class ChannelMember extends BaseDate {
+@Table(name = "workspace_member", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "workspace_id"})})
+public class WorkspaceMember extends BaseDate {
 
     @Id
     @GeneratedValue
     Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = {CascadeType.MERGE, CascadeType.REMOVE})
-    @JoinColumn(name = "channel_id", referencedColumnName = "id")
-    Channel channel;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "workspace_id", referencedColumnName = "id")
+    Workspace workspace;
+
+    LocalDateTime loggedInAt = LocalDateTime.now();
 
     @Builder(builderClassName = "createBuilder", builderMethodName = "createBuilder")
-    public ChannelMember(User user, Channel channel) {
+    public WorkspaceMember(User user, Workspace workspace) {
         this.user = user;
-        this.channel = channel;
+        this.workspace = workspace;
     }
-
 }

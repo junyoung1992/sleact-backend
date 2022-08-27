@@ -1,21 +1,25 @@
-package cj.task.sleact.core.workspace.dto.request;
+package cj.task.sleact.core.workspace.controller.dto.request;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.NotBlank;
 
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CreateWorkspaceHttpReq {
+@NoArgsConstructor
+public class CreateWorkspaceReq {
 
     @NotBlank
-    final String workspace;
+    String workspace;
     @NotBlank
-    final String url;
+    String url;
 
-    public CreateWorkspaceHttpReq(String workspace, String url) {
+    @Builder
+    public CreateWorkspaceReq(String workspace, String url) {
         this.workspace = workspace;
         this.url = url;
     }

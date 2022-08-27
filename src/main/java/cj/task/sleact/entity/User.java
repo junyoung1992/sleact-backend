@@ -1,4 +1,4 @@
-package cj.task.sleact.persistence.entity;
+package cj.task.sleact.entity;
 
 import lombok.AccessLevel;
 import lombok.Builder;

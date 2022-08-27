@@ -1,6 +1,6 @@
-package cj.task.sleact.persistence.repository;
+package cj.task.sleact.repository;
 
-import cj.task.sleact.persistence.entity.Workspace;
+import cj.task.sleact.entity.Workspace;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

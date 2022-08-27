@@ -1,4 +1,4 @@
-package cj.task.sleact.persistence.entity;
+package cj.task.sleact.entity;
 
 import cj.task.sleact.common.enums.MentionCategory;
 import lombok.AccessLevel;
@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -28,7 +29,7 @@ public class Mention extends BaseDate {
     Long id;
 
     @NotNull
-    @Enumerated
+    @Enumerated(value = EnumType.STRING)
     MentionCategory category;
 
     Long chatId;
