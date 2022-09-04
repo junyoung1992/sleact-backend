@@ -1,3 +1,7 @@
 spring:
   jpa:
     open-in-view: false
+
+token:
+  expire: 86400000
+  secret: secret_key

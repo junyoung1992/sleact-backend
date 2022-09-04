@@ -28,15 +28,15 @@ public class ChannelMember extends BaseDate {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    User user;
+    Member member;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "channel_id", referencedColumnName = "id")
     Channel channel;
 
     @Builder(builderClassName = "createBuilder", builderMethodName = "createBuilder")
-    public ChannelMember(User user, Channel channel) {
-        this.user = user;
+    public ChannelMember(Member member, Channel channel) {
+        this.member = member;
         this.channel = channel;
     }
 

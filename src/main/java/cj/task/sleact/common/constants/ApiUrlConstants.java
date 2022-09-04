@@ -4,6 +4,13 @@ public class ApiUrlConstants {
 
     private static final String URL_API = "/api";
 
+    public static class User {
+        public static final String BASE_URL = URL_API + "/users";
+
+        public static final String LOGIN = "/login";
+        public static final String LOGOUT = "/logout";
+    }
+
     public static class Workspace {
         public static final String BASE_URL = URL_API + "/workspaces";
 

@@ -47,7 +47,7 @@ public class Workspace extends BaseDate {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
-    User owner;
+    Member owner;
 
     @OneToMany(mappedBy = "workspace")
     List<WorkspaceMember> members = new ArrayList<>();
@@ -56,7 +56,7 @@ public class Workspace extends BaseDate {
     List<Channel> channels = new ArrayList<>();
 
     @Builder(builderClassName = "createBuilder", builderMethodName = "createBuilder")
-    public Workspace(String name, String url, User owner) {
+    public Workspace(String name, String url, Member owner) {
         Assert.hasText(name, "Workspace name must be not blank");
         Assert.hasText(url, "Workspace url must be not blank");
         Assert.notNull(owner, "Workspace owner must be not null");
@@ -66,7 +66,7 @@ public class Workspace extends BaseDate {
         setOwner(owner);
     }
 
-    private void setOwner(User owner) {
+    private void setOwner(Member owner) {
         this.owner = owner;
         owner.getOwned().add(this);
     }

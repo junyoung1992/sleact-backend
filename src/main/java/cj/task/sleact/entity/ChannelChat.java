@@ -38,6 +38,6 @@ public class ChannelChat extends BaseDate {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    User user;
+    Member member;
 
 }

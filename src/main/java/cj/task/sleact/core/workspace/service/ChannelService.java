@@ -28,7 +28,7 @@ public class ChannelService {
 
         return findWorkspace.getChannels().stream()
                 .filter(c -> c.getMembers().stream()
-                        .anyMatch(m -> Objects.equals(m.getUser().getId(), userId)))
+                        .anyMatch(m -> Objects.equals(m.getMember().getId(), userId)))
                 .map(ChannelMapper.INSTANCE::fromEntity)
                 .collect(Collectors.toList());
     }
@@ -51,7 +51,7 @@ public class ChannelService {
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 워크스페이스입니다."));
 
         for (var channel : findWorkspace.getChannels()) {
-            if(Objects.equals(channel.getName(), request.getName())) {
+            if (Objects.equals(channel.getName(), request.getName())) {
                 throw new RuntimeException("이미 존재하는 채널 이름입니다.");
             }
         }
