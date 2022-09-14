@@ -1,4 +1,4 @@
-package cj.task.sleact.core.workspace.service.subservice;
+package cj.task.sleact.core.workspace.component;
 
 import cj.task.sleact.entity.Member;
 import cj.task.sleact.entity.Workspace;
@@ -11,11 +11,16 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class WorkspaceRepositoryService {
+public class WorkspaceComponent {
 
-    private final MemberRepository memberRepository;
     private final WorkspaceRepository workspaceRepository;
+    private final MemberRepository memberRepository;
     private final WorkspaceMemberRepository workspaceMemberRepository;
+
+    public Workspace findWorkspaceByUrl(String workspaceUrl) {
+        return workspaceRepository.findOneByUrl(workspaceUrl)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 워크스페이스입니다."));
+    }
 
     public Workspace createWorkspaceWith(String workspaceName, String url, Long userId) {
         Member owner = memberRepository.findById(userId)

@@ -16,6 +16,8 @@ public class ApiUrlConstants {
 
         public static final String CHANNELS = "/{workspace}/channels";
         public static final String A_CHANNEL = "/{workspace}/channels/{channel}";
+        public static final String CHAT = "/{workspace}/channels/{channel}/chat";
+        public static final String UNREAD = "/{workspace}/channels/{channel}/unread";
     }
 
 }

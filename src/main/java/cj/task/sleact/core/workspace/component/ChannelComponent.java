@@ -1,4 +1,4 @@
-package cj.task.sleact.core.workspace.service.subservice;
+package cj.task.sleact.core.workspace.component;
 
 import cj.task.sleact.entity.Channel;
 import cj.task.sleact.entity.ChannelMember;
@@ -12,11 +12,16 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class ChannelRepositoryService {
+public class ChannelComponent {
 
     private final MemberRepository memberRepository;
     private final ChannelRepository channelRepository;
     private final ChannelMemberRepository channelMemberRepository;
+
+    public Channel findByWorkspaceUrlAndChannelName(String workspaceUrl, String channelName) {
+        return channelRepository.findByNameAndWorkspaceUrl(channelName, workspaceUrl)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 채널입니다."));
+    }
 
     public Channel createChannelWith(Workspace workspace, Long userId) {
         Member member = memberRepository.findById(userId)

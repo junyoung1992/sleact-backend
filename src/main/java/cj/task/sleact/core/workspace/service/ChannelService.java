@@ -1,11 +1,11 @@
 package cj.task.sleact.core.workspace.service;
 
+import cj.task.sleact.core.workspace.component.ChannelComponent;
+import cj.task.sleact.core.workspace.component.WorkspaceComponent;
 import cj.task.sleact.core.workspace.controller.dto.request.CreateChannelReq;
 import cj.task.sleact.core.workspace.controller.dto.response.ChannelInfoRes;
 import cj.task.sleact.core.workspace.mapper.ChannelMapper;
-import cj.task.sleact.core.workspace.service.subservice.ChannelRepositoryService;
 import cj.task.sleact.entity.Workspace;
-import cj.task.sleact.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,13 +18,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ChannelService {
 
-    private final WorkspaceRepository workspaceRepository;
-    private final ChannelRepositoryService channelRepositoryService;
+    private final WorkspaceComponent workspaceComponent;
+    private final ChannelComponent channelComponent;
 
     @Transactional(readOnly = true)
     public List<ChannelInfoRes> findChannelsBy(String workspaceUrl, Long userId) {
-        Workspace findWorkspace = workspaceRepository.findOneByUrl(workspaceUrl)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 워크스페이스입니다."));
+        Workspace findWorkspace = workspaceComponent.findWorkspaceByUrl(workspaceUrl);
 
         return findWorkspace.getChannels().stream()
                 .filter(c -> c.getMembers().stream()
@@ -35,20 +34,15 @@ public class ChannelService {
 
     @Transactional(readOnly = true)
     public ChannelInfoRes findChannelInfoBy(String workspaceUrl, String channelName) {
-        return workspaceRepository.findOneByUrl(workspaceUrl)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 워크스페이스입니다."))
-                .getChannels().stream()
-                .filter(c -> Objects.equals(c.getName(), channelName))
-                .map(ChannelMapper.INSTANCE::fromEntity)
-                .findAny()
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 채널입니다."));
+        workspaceComponent.findWorkspaceByUrl(workspaceUrl);
+        return ChannelMapper.INSTANCE.fromEntity(
+                channelComponent.findByWorkspaceUrlAndChannelName(workspaceUrl, channelName));
     }
 
 
     @Transactional
     public ChannelInfoRes createChannelWith(CreateChannelReq request, String workspaceUrl, Long userId) {
-        Workspace findWorkspace = workspaceRepository.findOneByUrl(workspaceUrl)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 워크스페이스입니다."));
+        Workspace findWorkspace = workspaceComponent.findWorkspaceByUrl(workspaceUrl);
 
         for (var channel : findWorkspace.getChannels()) {
             if (Objects.equals(channel.getName(), request.getName())) {
@@ -57,7 +51,7 @@ public class ChannelService {
         }
 
         return ChannelMapper.INSTANCE.fromEntity(
-                channelRepositoryService.createChannelWith(findWorkspace, userId));
+                channelComponent.createChannelWith(findWorkspace, userId));
     }
 
 }
