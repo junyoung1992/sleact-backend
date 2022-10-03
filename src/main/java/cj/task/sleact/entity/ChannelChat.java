@@ -1,6 +1,7 @@
 package cj.task.sleact.entity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -27,17 +28,24 @@ public class ChannelChat extends BaseDate {
     @GeneratedValue
     Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "channel_id", referencedColumnName = "id", nullable = false)
+    Channel channel;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    Member member;
+
     @Lob
     @NotBlank
     @Column(nullable = false)
     String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "channel_id", referencedColumnName = "id")
-    Channel channel;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    Member member;
+    @Builder(builderClassName = "createBuilder", builderMethodName = "createBuilder")
+    public ChannelChat(Channel channel, Member member, String content) {
+        this.channel = channel;
+        this.member = member;
+        this.content = content;
+    }
 
 }

@@ -3,10 +3,14 @@ package cj.task.sleact.core.workspace.component;
 import cj.task.sleact.core.workspace.controller.dto.response.ChatInfoRes;
 import cj.task.sleact.core.workspace.mapper.ChatMapper;
 import cj.task.sleact.entity.BaseDate;
+import cj.task.sleact.entity.Channel;
+import cj.task.sleact.entity.ChannelChat;
+import cj.task.sleact.entity.Member;
 import cj.task.sleact.repository.ChannelChatRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 
@@ -23,6 +27,19 @@ public class ChatComponent {
                 .limit(perPage)
                 .map(ChatMapper.INSTANCE::fromEntity)
                 .toList();
+    }
+
+    public Long countChannelChatAfterTarget(Long channelId, LocalDateTime target) {
+        return channelChatRepository.countChannelChatByChannelIdAndCreatedAtAfter(channelId, target);
+    }
+
+    public void post(Channel channel, Member member, String content) {
+        ChannelChat upload = ChannelChat.createBuilder()
+                .channel(channel)
+                .member(member)
+                .content(content)
+                .build();
+        channelChatRepository.save(upload);
     }
 
 }
