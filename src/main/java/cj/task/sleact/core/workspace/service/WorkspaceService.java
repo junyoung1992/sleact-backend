@@ -4,8 +4,11 @@ import cj.task.sleact.core.workspace.component.ChannelComponent;
 import cj.task.sleact.core.workspace.component.WorkspaceComponent;
 import cj.task.sleact.core.workspace.controller.dto.request.CreateWorkspaceReq;
 import cj.task.sleact.core.workspace.controller.dto.response.WorkspaceInfoRes;
+import cj.task.sleact.core.workspace.controller.dto.response.WorkspaceMemberRes;
 import cj.task.sleact.core.workspace.mapper.WorkspaceMapper;
+import cj.task.sleact.entity.User;
 import cj.task.sleact.entity.Workspace;
+import cj.task.sleact.repository.UserRepository;
 import cj.task.sleact.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,7 @@ public class WorkspaceService {
     private final WorkspaceRepository workspaceRepository;
     private final WorkspaceComponent workspaceComponent;
     private final ChannelComponent channelComponent;
+    private final UserRepository userRepository;
 
 
     @Transactional(readOnly = true)
@@ -28,6 +32,13 @@ public class WorkspaceService {
         return workspaceRepository.findAllByMemberId(userId).stream()
                 .map(WorkspaceMapper.INSTANCE::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<WorkspaceMemberRes> findMembersInWorkspace(String workspaceUrl) {
+        Workspace workspace = workspaceComponent.findWorkspaceByUrl(workspaceUrl);
+        List<User> members = userRepository.findAllInWorkspace(workspace.getId());
+        return WorkspaceMemberRes.fromEntity(members);
     }
 
     @Transactional

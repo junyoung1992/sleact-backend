@@ -1,7 +1,9 @@
 package cj.task.sleact.core.workspace.mapper;
 
 import cj.task.sleact.core.workspace.controller.dto.response.ChannelInfoRes;
+import cj.task.sleact.core.workspace.controller.dto.response.ChannelMemberRes;
 import cj.task.sleact.entity.Channel;
+import cj.task.sleact.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValueMappingStrategy;
@@ -12,7 +14,9 @@ public interface ChannelMapper {
 
     ChannelMapper INSTANCE = Mappers.getMapper(ChannelMapper.class);
 
-    @Mapping(expression = "java( channel.getWorkspace().getId() )", target = "workspaceId")
+    @Mapping(target = "workspaceId", expression = "java( channel.getWorkspace().getId() )")
     ChannelInfoRes fromEntity(Channel channel);
+
+    ChannelMemberRes fromEntity(User user);
 
 }

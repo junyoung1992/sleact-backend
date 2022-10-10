@@ -5,6 +5,7 @@ import cj.task.sleact.config.auth.LoginUser;
 import cj.task.sleact.config.auth.dto.SessionUser;
 import cj.task.sleact.core.workspace.controller.dto.request.CreateChannelReq;
 import cj.task.sleact.core.workspace.controller.dto.response.ChannelInfoRes;
+import cj.task.sleact.core.workspace.controller.dto.response.ChannelMemberRes;
 import cj.task.sleact.core.workspace.service.ChannelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +42,12 @@ public class ChannelController {
     public ChannelInfoRes getChannelInfo(@PathVariable(value = "workspace") String workspaceUrl,
                                          @PathVariable(value = "channel") String channelName) {
         return channelService.findChannelInfoBy(workspaceUrl, channelName);
+    }
+
+    @GetMapping(value = ApiUrlConstants.Workspace.CHANNEL_MEMBERS)
+    public List<ChannelMemberRes> getMembersInChannel(@PathVariable(value = "workspace") String workspaceUrl,
+                                                      @PathVariable(value = "channel") String channelName) {
+        return channelService.findMembersInChannel(workspaceUrl, channelName);
     }
 
 }

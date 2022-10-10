@@ -5,9 +5,11 @@ import cj.task.sleact.config.auth.LoginUser;
 import cj.task.sleact.config.auth.dto.SessionUser;
 import cj.task.sleact.core.workspace.controller.dto.request.CreateWorkspaceReq;
 import cj.task.sleact.core.workspace.controller.dto.response.WorkspaceInfoRes;
+import cj.task.sleact.core.workspace.controller.dto.response.WorkspaceMemberRes;
 import cj.task.sleact.core.workspace.service.WorkspaceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +33,11 @@ public class WorkspaceController {
     @PostMapping
     public WorkspaceInfoRes createWorkspace(@LoginUser SessionUser user, @RequestBody @Valid CreateWorkspaceReq body) {
         return workspaceService.createWorkspaceWith(body, user.getId());
+    }
+
+    @GetMapping(value = ApiUrlConstants.Workspace.WORKSPACE_MEMBERS)
+    public List<WorkspaceMemberRes> getMembersInWorkspace(@PathVariable(value = "workspace") String workspaceUrl) {
+        return workspaceService.findMembersInWorkspace(workspaceUrl);
     }
 
 }

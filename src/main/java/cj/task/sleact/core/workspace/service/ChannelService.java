@@ -4,8 +4,12 @@ import cj.task.sleact.core.workspace.component.ChannelComponent;
 import cj.task.sleact.core.workspace.component.WorkspaceComponent;
 import cj.task.sleact.core.workspace.controller.dto.request.CreateChannelReq;
 import cj.task.sleact.core.workspace.controller.dto.response.ChannelInfoRes;
+import cj.task.sleact.core.workspace.controller.dto.response.ChannelMemberRes;
 import cj.task.sleact.core.workspace.mapper.ChannelMapper;
+import cj.task.sleact.entity.Channel;
+import cj.task.sleact.entity.User;
 import cj.task.sleact.entity.Workspace;
+import cj.task.sleact.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +24,7 @@ public class ChannelService {
 
     private final WorkspaceComponent workspaceComponent;
     private final ChannelComponent channelComponent;
+    private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
     public List<ChannelInfoRes> findChannelsBy(String workspaceUrl, Long userId) {
@@ -34,11 +39,15 @@ public class ChannelService {
 
     @Transactional(readOnly = true)
     public ChannelInfoRes findChannelInfoBy(String workspaceUrl, String channelName) {
-        workspaceComponent.findWorkspaceByUrl(workspaceUrl);
-        return ChannelMapper.INSTANCE.fromEntity(
-                channelComponent.findByWorkspaceUrlAndChannelName(workspaceUrl, channelName));
+        return ChannelMapper.INSTANCE.fromEntity(findChannel(workspaceUrl, channelName));
     }
 
+    @Transactional(readOnly = true)
+    public List<ChannelMemberRes> findMembersInChannel(String workspaceUrl, String channelName) {
+        Channel channel = findChannel(workspaceUrl, channelName);
+        List<User> members = userRepository.findAllInChannel(channel.getId());
+        return ChannelMemberRes.fromEntity(members);
+    }
 
     @Transactional
     public ChannelInfoRes createChannelWith(CreateChannelReq request, String workspaceUrl, Long userId) {
@@ -52,6 +61,11 @@ public class ChannelService {
 
         return ChannelMapper.INSTANCE.fromEntity(
                 channelComponent.createChannelWith(findWorkspace, userId));
+    }
+
+    private Channel findChannel(String workspaceUrl, String channelName) {
+        workspaceComponent.findWorkspaceByUrl(workspaceUrl);
+        return channelComponent.findByWorkspaceUrlAndChannelName(workspaceUrl, channelName);
     }
 
 }
