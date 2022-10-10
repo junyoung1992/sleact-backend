@@ -1,5 +1,6 @@
 package cj.task.sleact.core.workspace.service;
 
+import cj.task.sleact.config.auth.dto.SessionUser;
 import cj.task.sleact.core.workspace.component.ChannelComponent;
 import cj.task.sleact.core.workspace.component.WorkspaceComponent;
 import cj.task.sleact.core.workspace.controller.dto.request.CreateWorkspaceReq;
@@ -28,8 +29,8 @@ public class WorkspaceService {
 
 
     @Transactional(readOnly = true)
-    public List<WorkspaceInfoRes> findWorkspacesBy(Long userId) {
-        return workspaceRepository.findAllByMemberId(userId).stream()
+    public List<WorkspaceInfoRes> findWorkspacesBy(SessionUser user) {
+        return workspaceRepository.findAllByMemberId(user.getId()).stream()
                 .map(WorkspaceMapper.INSTANCE::fromEntity)
                 .collect(Collectors.toList());
     }
@@ -39,6 +40,14 @@ public class WorkspaceService {
         Workspace workspace = workspaceComponent.findWorkspaceByUrl(workspaceUrl);
         List<User> members = userRepository.findAllInWorkspace(workspace.getId());
         return WorkspaceMemberRes.fromEntity(members);
+    }
+
+    @Transactional(readOnly = true)
+    public WorkspaceMemberRes findMemberInfo(String workspaceUrl, Long memberId) {
+        Workspace workspace = workspaceComponent.findWorkspaceByUrl(workspaceUrl);
+        User user = userRepository.findOneByUserIdAndWorkspaceId(memberId, workspace.getId())
+                .orElseThrow(() -> new RuntimeException("해당 사용자는 존재하지 않습니다."));
+        return WorkspaceMapper.INSTANCE.fromEntity(user);
     }
 
     @Transactional

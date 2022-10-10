@@ -14,6 +14,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("""
             select u
+            from User u
+            inner join u.workspaces wm
+            where wm.workspace.id = :workspaceId
+            and u.id = :userId
+            """)
+    Optional<User> findOneByUserIdAndWorkspaceId(@Param("userId") Long userId, @Param("workspaceId") Long workspaceId);
+
+    @Query("""
+            select u
             from WorkspaceMember wm
             inner join wm.user u
             where wm.workspace.id = :workspaceId

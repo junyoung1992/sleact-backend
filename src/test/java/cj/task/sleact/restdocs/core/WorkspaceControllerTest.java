@@ -24,7 +24,7 @@ import java.util.List;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.epages.restdocs.apispec.Schema.schema;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
@@ -43,10 +43,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         }
 )
 class WorkspaceControllerTest {
-
     @Autowired
     MockMvc mockMvc;
-
     @MockBean
     WorkspaceService workspaceService;
 
@@ -56,11 +54,11 @@ class WorkspaceControllerTest {
     public void getWorkspaceInfoByUserId() throws Exception {
         // given
         Long id = 1L;
-        Long ownerId = 1L;
+        Long ownerId = 3L;
         String name = "workspace_test";
         String url = "test.workspace.com";
         WorkspaceInfoRes response = new WorkspaceInfoRes(id, name, url, ownerId);
-        given(workspaceService.findWorkspacesBy(anyLong())).willReturn(List.of(response));
+        given(workspaceService.findWorkspacesBy(any())).willReturn(List.of(response));
 
         // when
         ResultActions result = mockMvc.perform(get(ApiUrlConstants.Workspace.BASE_URL));

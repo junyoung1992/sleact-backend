@@ -1,10 +1,13 @@
 package cj.task.sleact.core.workspace.service;
 
+import cj.task.sleact.config.auth.dto.SessionUser;
+import cj.task.sleact.core.dm.component.DMComponent;
 import cj.task.sleact.core.workspace.component.ChannelComponent;
 import cj.task.sleact.core.workspace.component.ChatComponent;
 import cj.task.sleact.core.workspace.component.WorkspaceComponent;
 import cj.task.sleact.entity.Channel;
 import cj.task.sleact.entity.User;
+import cj.task.sleact.entity.Workspace;
 import cj.task.sleact.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +33,7 @@ public class UploadService {
     private final WorkspaceComponent workspaceComponent;
     private final ChannelComponent channelComponent;
     private final ChatComponent chatComponent;
+    private final DMComponent dmComponent;
     private final UserRepository userRepository;
 
     @Value("${path.uploads}")
@@ -45,6 +49,22 @@ public class UploadService {
         for (MultipartFile image : images) {
             Path path = saveFile(image);
             chatComponent.post(channel, user, path.toString());
+        }
+    }
+
+    @Transactional
+    public void uploadImages(String workspaceUrl, Long receiverId, SessionUser user, List<MultipartFile> images) {
+        Workspace workspace = workspaceComponent.findWorkspaceByUrl(workspaceUrl);
+
+        User sender = userRepository.findById(user.getId())
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
+
+        User receiver = userRepository.findById(receiverId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
+
+        for (MultipartFile image : images) {
+            Path path = saveFile(image);
+            dmComponent.post(workspace, sender, receiver, path.toString());
         }
     }
 

@@ -1,6 +1,7 @@
 package cj.task.sleact.entity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -43,5 +44,13 @@ public class Dm extends BaseDate {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id", referencedColumnName = "id")
     User receiver;
+
+    @Builder(builderClassName = "createBuilder", builderMethodName = "createBuilder")
+    public Dm(String text, Workspace workspace, User sender, User receiver) {
+        this.text = text;
+        this.workspace = workspace;
+        this.sender = sender;
+        this.receiver = receiver;
+    }
 
 }

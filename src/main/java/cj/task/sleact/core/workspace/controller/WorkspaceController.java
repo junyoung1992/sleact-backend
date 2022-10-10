@@ -27,7 +27,7 @@ public class WorkspaceController {
 
     @GetMapping
     public List<WorkspaceInfoRes> getWorkspacesByUserId(@LoginUser SessionUser user) {
-        return workspaceService.findWorkspacesBy(user.getId());
+        return workspaceService.findWorkspacesBy(user);
     }
 
     @PostMapping
@@ -38,6 +38,12 @@ public class WorkspaceController {
     @GetMapping(value = ApiUrlConstants.Workspace.WORKSPACE_MEMBERS)
     public List<WorkspaceMemberRes> getMembersInWorkspace(@PathVariable(value = "workspace") String workspaceUrl) {
         return workspaceService.findMembersInWorkspace(workspaceUrl);
+    }
+
+    @GetMapping(value = ApiUrlConstants.Workspace.WORKSPACE_A_MEMBER)
+    public WorkspaceMemberRes getMemberInfo(@PathVariable(value = "workspace") String workspaceUrl,
+                                            @PathVariable(value = "member") Long memberId) {
+        return workspaceService.findMemberInfo(workspaceUrl, memberId);
     }
 
 }
