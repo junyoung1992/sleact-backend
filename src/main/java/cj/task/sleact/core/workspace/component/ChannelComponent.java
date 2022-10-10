@@ -2,11 +2,11 @@ package cj.task.sleact.core.workspace.component;
 
 import cj.task.sleact.entity.Channel;
 import cj.task.sleact.entity.ChannelMember;
-import cj.task.sleact.entity.Member;
+import cj.task.sleact.entity.User;
 import cj.task.sleact.entity.Workspace;
 import cj.task.sleact.repository.ChannelMemberRepository;
 import cj.task.sleact.repository.ChannelRepository;
-import cj.task.sleact.repository.MemberRepository;
+import cj.task.sleact.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ChannelComponent {
 
-    private final MemberRepository memberRepository;
+    private final UserRepository userRepository;
     private final ChannelRepository channelRepository;
     private final ChannelMemberRepository channelMemberRepository;
 
@@ -24,7 +24,7 @@ public class ChannelComponent {
     }
 
     public Channel createChannelWith(Workspace workspace, Long userId) {
-        Member member = memberRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
 
         Channel newChannel = Channel.createBuilder()
@@ -34,7 +34,7 @@ public class ChannelComponent {
 
         ChannelMember newChannelMember = ChannelMember.createBuilder()
                 .channel(newChannel)
-                .member(member)
+                .user(user)
                 .build();
 
         channelRepository.save(newChannel);

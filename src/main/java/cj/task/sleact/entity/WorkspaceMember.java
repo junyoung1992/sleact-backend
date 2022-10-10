@@ -29,7 +29,7 @@ public class WorkspaceMember extends BaseDate {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    Member member;
+    User user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "workspace_id", referencedColumnName = "id", nullable = false)
@@ -38,8 +38,8 @@ public class WorkspaceMember extends BaseDate {
     LocalDateTime loggedInAt = LocalDateTime.now();
 
     @Builder(builderClassName = "createBuilder", builderMethodName = "createBuilder")
-    public WorkspaceMember(Member member, Workspace workspace) {
-        this.member = member;
+    public WorkspaceMember(User user, Workspace workspace) {
+        this.user = user;
         this.workspace = workspace;
     }
 }

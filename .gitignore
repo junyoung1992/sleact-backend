@@ -41,3 +41,5 @@ out/
 **/src/test/**/generated_tests/
 
 **/resources/static/docs/
+
+application-oauth.yml

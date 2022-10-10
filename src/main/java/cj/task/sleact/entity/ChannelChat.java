@@ -34,7 +34,7 @@ public class ChannelChat extends BaseDate {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    Member member;
+    User user;
 
     @Lob
     @NotBlank
@@ -42,9 +42,9 @@ public class ChannelChat extends BaseDate {
     String content;
 
     @Builder(builderClassName = "createBuilder", builderMethodName = "createBuilder")
-    public ChannelChat(Channel channel, Member member, String content) {
+    public ChannelChat(Channel channel, User user, String content) {
         this.channel = channel;
-        this.member = member;
+        this.user = user;
         this.content = content;
     }
 

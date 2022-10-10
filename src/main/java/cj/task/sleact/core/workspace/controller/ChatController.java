@@ -1,10 +1,13 @@
 package cj.task.sleact.core.workspace.controller;
 
+import cj.task.sleact.config.auth.LoginUser;
+import cj.task.sleact.config.auth.dto.SessionUser;
 import cj.task.sleact.core.workspace.controller.dto.request.PostChatReq;
 import cj.task.sleact.core.workspace.controller.dto.response.ChatInfoRes;
 import cj.task.sleact.core.workspace.service.ChatService;
 import cj.task.sleact.core.workspace.service.UploadService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,23 +44,25 @@ public class ChatController {
     }
 
     @PostMapping(value = CHAT)
-    public void chat(@PathVariable(value = "workspace") String workspaceUrl,
+    public void chat(@LoginUser SessionUser user,
+                     @PathVariable(value = "workspace") String workspaceUrl,
                      @PathVariable(value = "channel") String channelName,
                      @RequestBody @Valid PostChatReq body) {
-        chatService.post(workspaceUrl, channelName, 1L, body);
+        chatService.post(workspaceUrl, channelName, user.getId(), body);
     }
 
     @PostMapping(value = IMAGE)
-    public void uploadImages(@PathVariable(value = "workspace") String workspaceUrl,
+    public void uploadImages(@LoginUser SessionUser user,
+                             @PathVariable(value = "workspace") String workspaceUrl,
                              @PathVariable(value = "channel") String channelName,
                              @RequestPart(value = "image") List<MultipartFile> images) {
-        uploadService.uploadImages(workspaceUrl, channelName, 1L, images);
+        uploadService.uploadImages(workspaceUrl, channelName, user.getId(), images);
     }
 
     @GetMapping(value = UNREAD)
     public Long getUnreadCount(@PathVariable(value = "workspace") String workspaceUrl,
                                @PathVariable(value = "channel") String channelName,
-                               @RequestParam(value = "after") LocalDateTime after) {
+                               @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") @RequestParam(value = "after") LocalDateTime after) {
         return chatService.countUnreadChat(workspaceUrl, channelName, after);
     }
 

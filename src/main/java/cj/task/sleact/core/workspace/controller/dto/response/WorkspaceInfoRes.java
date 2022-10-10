@@ -9,10 +9,10 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class WorkspaceInfoRes {
 
-    private final Long id;
-    private final String name;
-    private final String url;
-    private final Long ownerId;
+    final Long id;
+    final String name;
+    final String url;
+    final Long ownerId;
 
     @Builder
     public WorkspaceInfoRes(Long id, String name, String url, Long ownerId) {

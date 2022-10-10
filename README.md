@@ -35,7 +35,7 @@ https://github.com/ZeroCho/sleact
 |   `-- enums
 |-- configuration
 |-- core
-|   |-- member
+|   |-- user
 |   |   |-- component
 |   |   |-- controller
 |   |   |   `-- dto

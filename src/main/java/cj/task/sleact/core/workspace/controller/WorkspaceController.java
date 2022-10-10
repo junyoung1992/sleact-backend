@@ -1,6 +1,8 @@
 package cj.task.sleact.core.workspace.controller;
 
 import cj.task.sleact.common.constants.ApiUrlConstants;
+import cj.task.sleact.config.auth.LoginUser;
+import cj.task.sleact.config.auth.dto.SessionUser;
 import cj.task.sleact.core.workspace.controller.dto.request.CreateWorkspaceReq;
 import cj.task.sleact.core.workspace.controller.dto.response.WorkspaceInfoRes;
 import cj.task.sleact.core.workspace.service.WorkspaceService;
@@ -22,15 +24,13 @@ public class WorkspaceController {
     private final WorkspaceService workspaceService;
 
     @GetMapping
-    public List<WorkspaceInfoRes> getWorkspacesByUserId() {
-        Long userId = 1L;
-        return workspaceService.findWorkspacesBy(userId);
+    public List<WorkspaceInfoRes> getWorkspacesByUserId(@LoginUser SessionUser user) {
+        return workspaceService.findWorkspacesBy(user.getId());
     }
 
     @PostMapping
-    public WorkspaceInfoRes createWorkspace(@RequestBody @Valid CreateWorkspaceReq body) {
-        Long userId = 1L;
-        return workspaceService.createWorkspaceWith(body, userId);
+    public WorkspaceInfoRes createWorkspace(@LoginUser SessionUser user, @RequestBody @Valid CreateWorkspaceReq body) {
+        return workspaceService.createWorkspaceWith(body, user.getId());
     }
 
 }

@@ -1,9 +1,9 @@
 package cj.task.sleact.core.workspace.component;
 
-import cj.task.sleact.entity.Member;
+import cj.task.sleact.entity.User;
 import cj.task.sleact.entity.Workspace;
 import cj.task.sleact.entity.WorkspaceMember;
-import cj.task.sleact.repository.MemberRepository;
+import cj.task.sleact.repository.UserRepository;
 import cj.task.sleact.repository.WorkspaceMemberRepository;
 import cj.task.sleact.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class WorkspaceComponent {
 
     private final WorkspaceRepository workspaceRepository;
-    private final MemberRepository memberRepository;
+    private final UserRepository userRepository;
     private final WorkspaceMemberRepository workspaceMemberRepository;
 
     public Workspace findWorkspaceByUrl(String workspaceUrl) {
@@ -23,7 +23,7 @@ public class WorkspaceComponent {
     }
 
     public Workspace createWorkspaceWith(String workspaceName, String url, Long userId) {
-        Member owner = memberRepository.findById(userId)
+        User owner = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
 
         Workspace newWorkspace = Workspace.createBuilder()
@@ -34,7 +34,7 @@ public class WorkspaceComponent {
 
         WorkspaceMember newWorkspaceMember = WorkspaceMember.createBuilder()
                 .workspace(newWorkspace)
-                .member(owner)
+                .user(owner)
                 .build();
 
         workspaceRepository.save(newWorkspace);

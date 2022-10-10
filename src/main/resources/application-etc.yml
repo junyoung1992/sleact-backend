@@ -5,11 +5,13 @@ spring:
 
 springdoc:
   swagger-ui:
-    url: /docs/api.json
-    disable-swagger-default-url: true
+    disable-swagger-default-url: false
     operations-sorter: method
+    path: /docs/api.json
   cache:
     disabled: true
+  api-docs:
+    path: /docs/api.json
 ---
 
 spring:

@@ -11,11 +11,11 @@ import java.util.Optional;
 public interface WorkspaceRepository extends JpaRepository<Workspace, Long> {
 
     @Query(value = """
-        select w
-        from Workspace w
-        inner join w.members m
-        where m.id = :memberId
-        """)
+            select w
+            from WorkspaceMember wm
+            inner join wm.workspace w
+            where wm.user.id = :memberId
+            """)
     List<Workspace> findAllByMemberId(@Param("memberId") Long memberId);
 
     Optional<Workspace> findOneByUrl(String url);

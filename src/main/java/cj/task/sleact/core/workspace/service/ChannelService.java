@@ -27,7 +27,7 @@ public class ChannelService {
 
         return findWorkspace.getChannels().stream()
                 .filter(c -> c.getMembers().stream()
-                        .anyMatch(m -> Objects.equals(m.getMember().getId(), userId)))
+                        .anyMatch(m -> Objects.equals(m.getUser().getId(), userId)))
                 .map(ChannelMapper.INSTANCE::fromEntity)
                 .collect(Collectors.toList());
     }

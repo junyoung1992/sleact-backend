@@ -6,8 +6,8 @@ import cj.task.sleact.core.workspace.component.WorkspaceComponent;
 import cj.task.sleact.core.workspace.controller.dto.request.PostChatReq;
 import cj.task.sleact.core.workspace.controller.dto.response.ChatInfoRes;
 import cj.task.sleact.entity.Channel;
-import cj.task.sleact.entity.Member;
-import cj.task.sleact.repository.MemberRepository;
+import cj.task.sleact.entity.User;
+import cj.task.sleact.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +22,7 @@ public class ChatService {
     private final WorkspaceComponent workspaceComponent;
     private final ChannelComponent channelComponent;
     private final ChatComponent chatComponent;
-    private final MemberRepository memberRepository;
+    private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
     public List<ChatInfoRes> findPagingList(String workspaceUrl, String channelName, Long perPage, Long page) {
@@ -40,9 +40,9 @@ public class ChatService {
     public void post(String workspaceUrl, String channelName, Long memberId, PostChatReq request) {
         Channel channel = findChannel(workspaceUrl, channelName);
 
-        Member member = memberRepository.findById(memberId)
+        User user = userRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
-        chatComponent.post(channel, member, request.getContent());
+        chatComponent.post(channel, user, request.getContent());
     }
 
     private Channel findChannel(String workspaceUrl, String channelName) {

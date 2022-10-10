@@ -13,11 +13,11 @@ import lombok.experimental.FieldDefaults;
         getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class ChannelInfoRes {
 
-    private final Long id;
-    private final String name;
+    final Long id;
+    final String name;
     @JsonProperty(value = "private")
-    private final boolean privates;
-    private final Long workspaceId;
+    final boolean privates;
+    final Long workspaceId;
 
     @Builder
     public ChannelInfoRes(Long id, String name, boolean privates, Long workspaceId) {

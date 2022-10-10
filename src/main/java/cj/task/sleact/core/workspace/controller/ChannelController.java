@@ -1,6 +1,8 @@
 package cj.task.sleact.core.workspace.controller;
 
 import cj.task.sleact.common.constants.ApiUrlConstants;
+import cj.task.sleact.config.auth.LoginUser;
+import cj.task.sleact.config.auth.dto.SessionUser;
 import cj.task.sleact.core.workspace.controller.dto.request.CreateChannelReq;
 import cj.task.sleact.core.workspace.controller.dto.response.ChannelInfoRes;
 import cj.task.sleact.core.workspace.service.ChannelService;
@@ -23,16 +25,16 @@ public class ChannelController {
     private final ChannelService channelService;
 
     @GetMapping(value = ApiUrlConstants.Workspace.CHANNELS)
-    public List<ChannelInfoRes> getChannelsByWorkspaceAndUserId(@PathVariable(value = "workspace") String workspaceUrl) {
-        Long userId = 1L;
-        return channelService.findChannelsBy(workspaceUrl, userId);
+    public List<ChannelInfoRes> getChannelsByWorkspaceAndUserId(@LoginUser SessionUser user,
+                                                                @PathVariable(value = "workspace") String workspaceUrl) {
+        return channelService.findChannelsBy(workspaceUrl, user.getId());
     }
 
     @PostMapping(value = ApiUrlConstants.Workspace.CHANNELS)
-    public ChannelInfoRes createChannel(@PathVariable(value = "workspace") String workspaceUrl,
+    public ChannelInfoRes createChannel(@LoginUser SessionUser user,
+                                        @PathVariable(value = "workspace") String workspaceUrl,
                                         @RequestBody @Valid CreateChannelReq body) {
-        Long userId = 1L;
-        return channelService.createChannelWith(body, workspaceUrl, userId);
+        return channelService.createChannelWith(body, workspaceUrl, user.getId());
     }
 
     @GetMapping(value = ApiUrlConstants.Workspace.A_CHANNEL)

@@ -5,7 +5,7 @@ import cj.task.sleact.core.workspace.mapper.ChatMapper;
 import cj.task.sleact.entity.BaseDate;
 import cj.task.sleact.entity.Channel;
 import cj.task.sleact.entity.ChannelChat;
-import cj.task.sleact.entity.Member;
+import cj.task.sleact.entity.User;
 import cj.task.sleact.repository.ChannelChatRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -33,10 +33,10 @@ public class ChatComponent {
         return channelChatRepository.countChannelChatByChannelIdAndCreatedAtAfter(channelId, target);
     }
 
-    public void post(Channel channel, Member member, String content) {
+    public void post(Channel channel, User user, String content) {
         ChannelChat upload = ChannelChat.createBuilder()
                 .channel(channel)
-                .member(member)
+                .user(user)
                 .content(content)
                 .build();
         channelChatRepository.save(upload);

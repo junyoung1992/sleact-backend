@@ -11,17 +11,17 @@ import java.util.stream.Collectors;
 
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class MemberInfoRes {
+public class UserInfoRes {
 
     final Long id;
-    final String nickname;
+    final String name;
     final String email;
     final List<WorkspaceInfoRes> workspaces;
 
     @Builder
-    public MemberInfoRes(Long id, String nickname, String email, List<Workspace> workspaces) {
+    public UserInfoRes(Long id, String name, String email, List<Workspace> workspaces) {
         this.id = id;
-        this.nickname = nickname;
+        this.name = name;
         this.email = email;
 
         this.workspaces = workspaces.stream()

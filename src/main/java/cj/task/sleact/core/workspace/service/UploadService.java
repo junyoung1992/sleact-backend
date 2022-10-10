@@ -4,8 +4,8 @@ import cj.task.sleact.core.workspace.component.ChannelComponent;
 import cj.task.sleact.core.workspace.component.ChatComponent;
 import cj.task.sleact.core.workspace.component.WorkspaceComponent;
 import cj.task.sleact.entity.Channel;
-import cj.task.sleact.entity.Member;
-import cj.task.sleact.repository.MemberRepository;
+import cj.task.sleact.entity.User;
+import cj.task.sleact.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +30,7 @@ public class UploadService {
     private final WorkspaceComponent workspaceComponent;
     private final ChannelComponent channelComponent;
     private final ChatComponent chatComponent;
-    private final MemberRepository memberRepository;
+    private final UserRepository userRepository;
 
     @Value("${path.uploads}")
     private String uploadDirectory;
@@ -39,12 +39,12 @@ public class UploadService {
     public void uploadImages(String workspaceUrl, String channelName, Long memberId, List<MultipartFile> images) {
         Channel channel = findChannel(workspaceUrl, channelName);
 
-        Member member = memberRepository.findById(memberId)
+        User user = userRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
 
         for (MultipartFile image : images) {
             Path path = saveFile(image);
-            chatComponent.post(channel, member, path.toString());
+            chatComponent.post(channel, user, path.toString());
         }
     }
 

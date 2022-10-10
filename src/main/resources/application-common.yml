@@ -6,9 +6,5 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
 
-token:
-  expire: 86400000
-  secret: secret_key
-
 path:
   uploads: uploads

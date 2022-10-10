@@ -6,7 +6,7 @@ import cj.task.sleact.core.workspace.component.WorkspaceComponent;
 import cj.task.sleact.core.workspace.controller.dto.response.ChatInfoRes;
 import cj.task.sleact.entity.Channel;
 import cj.task.sleact.entity.Workspace;
-import cj.task.sleact.repository.MemberRepository;
+import cj.task.sleact.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -38,7 +38,7 @@ class ChatServiceTest {
     ChatComponent chatComponent;
 
     @Mock
-    MemberRepository memberRepository;
+    UserRepository userRepository;
 
     @InjectMocks
     ChatService chatService;

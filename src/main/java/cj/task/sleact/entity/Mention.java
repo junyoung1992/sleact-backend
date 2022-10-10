@@ -40,10 +40,10 @@ public class Mention extends BaseDate {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_id", referencedColumnName = "id")
-    Member sender;
+    User sender;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id", referencedColumnName = "id")
-    Member receiver;
+    User receiver;
 
 }

@@ -1,5 +1,7 @@
 package cj.task.sleact.restdocs.core;
 
+import cj.task.sleact.config.auth.SecurityConfig;
+import cj.task.sleact.core.workspace.controller.ChatController;
 import cj.task.sleact.core.workspace.controller.dto.response.ChatInfoRes;
 import cj.task.sleact.core.workspace.service.ChatService;
 import cj.task.sleact.core.workspace.service.UploadService;
@@ -11,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -32,7 +36,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Slf4j
 @AutoConfigureRestDocs
-@WebMvcTest(ChatControllerTest.class)
+@WebMvcTest(
+        controllers = ChatController.class,
+        excludeFilters = {
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class)
+        }
+)
 public class ChatControllerTest {
 
     @Autowired
@@ -49,7 +58,7 @@ public class ChatControllerTest {
     class GetChatList {
 
         @Test
-        @WithMockUser
+        @WithMockUser(roles = "USER")
         @DisplayName("채팅 내역 정상 조회")
         public void success() throws Exception {
             // given
@@ -77,7 +86,7 @@ public class ChatControllerTest {
             given(chatService.findPagingList(anyString(), anyString(), anyLong(), anyLong())).willReturn(mockChats);
 
             // when
-            ResultActions result = mockMvc.perform(get(BASE_URL + CHAT, "wks1", "2")
+            ResultActions result = mockMvc.perform(get(BASE_URL + CHAT, "wks1", "ch2")
                     .param("perPage", "20")
                     .param("page", "1"));
 
@@ -89,12 +98,12 @@ public class ChatControllerTest {
                     .andExpect(jsonPath("$[0].id").value(chatInfo1.getId()))
                     .andExpect(jsonPath("$[0].userId").value(chatInfo1.getUserId()))
                     .andExpect(jsonPath("$[0].content").value(chatInfo1.getContent()))
-                    .andExpect(jsonPath("$[0].createdAt").value(chatInfo1.getCreatedAt()))
+                    .andExpect(jsonPath("$[0].createdAt").value(chatInfo1.getCreatedAt().toString()))
                     .andExpect(jsonPath("$[0].channelId").value(chatInfo1.getChannelId()))
                     .andExpect(jsonPath("$[1].id").value(chatInfo2.getId()))
                     .andExpect(jsonPath("$[1].userId").value(chatInfo2.getUserId()))
                     .andExpect(jsonPath("$[1].content").value(chatInfo2.getContent()))
-                    .andExpect(jsonPath("$[1].createdAt").value(chatInfo2.getCreatedAt()))
+                    .andExpect(jsonPath("$[1].createdAt").value(chatInfo2.getCreatedAt().toString()))
                     .andExpect(jsonPath("$[1].channelId").value(chatInfo2.getChannelId()));
         }
     }

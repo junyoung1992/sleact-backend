@@ -1,6 +1,6 @@
 spring:
   profiles:
     group:
-      local: common, local, on-restdocs
-      dev: common, dev, on-restdocs
+      local: common, local, on-restdocs, oauth
+      dev: common, dev, on-restdocs, oauth
     default: local
