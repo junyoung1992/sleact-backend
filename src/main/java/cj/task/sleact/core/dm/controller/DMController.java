@@ -9,6 +9,7 @@ import cj.task.sleact.core.dm.service.DMService;
 import cj.task.sleact.core.workspace.service.UploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +31,7 @@ public class DMController {
 
     private final DMService dmService;
     private final UploadService uploadService;
+    private final SimpMessagingTemplate template;
 
     @GetMapping(value = ApiUrlConstants.DM.CHAT)
     public List<DMInfoRes> getDMList(@LoginUser SessionUser user,
@@ -45,7 +47,8 @@ public class DMController {
                    @PathVariable(value = "workspace") String workspaceUrl,
                    @PathVariable(value = "user") Long theOtherId,
                    @RequestBody @Valid PostDmReq body) {
-        dmService.post(workspaceUrl, theOtherId, user, body);
+        DMInfoRes post = dmService.post(workspaceUrl, theOtherId, user, body);
+        template.convertAndSend("/topic/ws-" + workspaceUrl, post);
     }
 
     @PostMapping(value = ApiUrlConstants.DM.IMAGE)
@@ -53,7 +56,8 @@ public class DMController {
                              @PathVariable(value = "workspace") String workspaceUrl,
                              @PathVariable(value = "user") Long theOtherId,
                              @RequestPart(value = "image") List<MultipartFile> images) {
-        uploadService.uploadImages(workspaceUrl, theOtherId, user, images);
+        List<DMInfoRes> post = uploadService.uploadImages(workspaceUrl, theOtherId, user, images);
+        template.convertAndSend("/topic/ws-" + workspaceUrl, post);
     }
 
 

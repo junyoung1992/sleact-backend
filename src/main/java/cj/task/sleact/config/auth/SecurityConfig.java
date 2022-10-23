@@ -19,9 +19,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()    // URL별 권한 관리
                 .antMatchers("/").permitAll()   // "/" 전체 권한
+                .antMatchers("/uploads/**").permitAll()   // "/uploads" 전체 권한
                 .antMatchers("/swagger-ui/**", "/docs/api.json").permitAll()   // swagger 전체 권한
-                .antMatchers("/oauth2/authorization/google").permitAll()   // swagger 전체 권한
+                .antMatchers("/oauth2/authorization/google").permitAll()   // oauth2 전체 권한
                 .antMatchers("/api/**").hasAnyRole(UserRole.USER.name(), UserRole.ADMIN.name()) // "/api/**" USER, ADMIN 권한
+                .antMatchers("/subscribe/**").permitAll()   // "/subscribe" 전체 권한
                 .anyRequest().authenticated()   // 상기 요청 이외 요청들은 인증된 사용자만 허용
                 .and()
                 .logout().logoutSuccessUrl("/") // 로그아웃시 "/" 로 이동

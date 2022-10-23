@@ -7,6 +7,7 @@ import cj.task.sleact.core.dm.controller.response.DMInfoRes;
 import cj.task.sleact.core.dm.mapper.DmMapper;
 import cj.task.sleact.core.workspace.component.WorkspaceComponent;
 import cj.task.sleact.entity.BaseDate;
+import cj.task.sleact.entity.Dm;
 import cj.task.sleact.entity.User;
 import cj.task.sleact.entity.Workspace;
 import cj.task.sleact.repository.DMRepository;
@@ -46,7 +47,7 @@ public class DMService {
     }
 
     @Transactional
-    public void post(String workspaceUrl, Long receiverId, SessionUser user, PostDmReq request) {
+    public DMInfoRes post(String workspaceUrl, Long receiverId, SessionUser user, PostDmReq request) {
         Workspace workspace = workspaceComponent.findWorkspaceByUrl(workspaceUrl);
 
         User sender = userRepository.findById(user.getId())
@@ -54,6 +55,7 @@ public class DMService {
         User receiver = userRepository.findById(receiverId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
 
-        dmComponent.post(workspace, sender, receiver, request.getContent());
+        Dm dm = dmComponent.post(workspace, sender, receiver, request.getContent());
+        return DmMapper.INSTANCE.fromEntity(dm);
     }
 }

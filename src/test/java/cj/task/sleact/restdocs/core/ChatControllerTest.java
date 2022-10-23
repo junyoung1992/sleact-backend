@@ -65,21 +65,21 @@ public class ChatControllerTest {
             ChatInfoRes chatInfo1 = ChatInfoRes.builder()
                     .id(3L)
                     .userId(1L)
-                    .user(null)
+//                    .user(null)
                     .content("채팅")
                     .createdAt(LocalDateTime.now())
                     .channelId(2L)
-                    .channel(null)
+//                    .channel(null)
                     .build();
 
             ChatInfoRes chatInfo2 = ChatInfoRes.builder()
                     .id(5L)
                     .userId(4L)
-                    .user(null)
+//                    .user(null)
                     .content("채팅")
                     .createdAt(LocalDateTime.now())
                     .channelId(2L)
-                    .channel(null)
+//                    .channel(null)
                     .build();
 
             List<ChatInfoRes> mockChats = List.of(chatInfo1, chatInfo2);

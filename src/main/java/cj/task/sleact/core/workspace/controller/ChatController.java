@@ -8,6 +8,7 @@ import cj.task.sleact.core.workspace.service.ChatService;
 import cj.task.sleact.core.workspace.service.UploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,6 +35,7 @@ public class ChatController {
 
     private final ChatService chatService;
     private final UploadService uploadService;
+    private final SimpMessagingTemplate template;
 
     @GetMapping(value = CHAT)
     public List<ChatInfoRes> getChatList(@PathVariable(value = "workspace") String workspaceUrl,
@@ -48,7 +50,8 @@ public class ChatController {
                      @PathVariable(value = "workspace") String workspaceUrl,
                      @PathVariable(value = "channel") String channelName,
                      @RequestBody @Valid PostChatReq body) {
-        chatService.post(workspaceUrl, channelName, user.getId(), body);
+        ChatInfoRes post = chatService.post(workspaceUrl, channelName, user.getId(), body);
+        template.convertAndSend("/topic/ws-" + workspaceUrl + "-" + channelName, post);
     }
 
     @PostMapping(value = IMAGE)
@@ -56,7 +59,8 @@ public class ChatController {
                              @PathVariable(value = "workspace") String workspaceUrl,
                              @PathVariable(value = "channel") String channelName,
                              @RequestPart(value = "image") List<MultipartFile> images) {
-        uploadService.uploadImages(workspaceUrl, channelName, user.getId(), images);
+        List<ChatInfoRes> uploads = uploadService.uploadImages(workspaceUrl, channelName, user.getId(), images);
+        uploads.forEach(upload -> template.convertAndSend("/topic/messages", upload));
     }
 
     @GetMapping(value = UNREAD)

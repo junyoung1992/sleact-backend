@@ -49,8 +49,8 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
 
     // mapstruct
-    implementation 'org.mapstruct:mapstruct:1.5.2.Final'
-    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.2.Final'
+    implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
     testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.5.2.Final'
 
     // swagger + restdocs

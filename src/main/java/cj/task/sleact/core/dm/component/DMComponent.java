@@ -13,14 +13,15 @@ public class DMComponent {
 
     private final DMRepository dmRepository;
 
-    public void post(Workspace workspace, User sender, User receiver, String content) {
+    public Dm post(Workspace workspace, User sender, User receiver, String content) {
         Dm post = Dm.createBuilder()
                 .workspace(workspace)
                 .sender(sender)
                 .receiver(receiver)
-                .text(content)
+                .content(content)
                 .build();
         dmRepository.save(post);
+        return post;
     }
 
 }

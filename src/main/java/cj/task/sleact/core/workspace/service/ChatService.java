@@ -5,7 +5,9 @@ import cj.task.sleact.core.workspace.component.ChatComponent;
 import cj.task.sleact.core.workspace.component.WorkspaceComponent;
 import cj.task.sleact.core.workspace.controller.dto.request.PostChatReq;
 import cj.task.sleact.core.workspace.controller.dto.response.ChatInfoRes;
+import cj.task.sleact.core.workspace.mapper.ChatMapper;
 import cj.task.sleact.entity.Channel;
+import cj.task.sleact.entity.ChannelChat;
 import cj.task.sleact.entity.User;
 import cj.task.sleact.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +29,9 @@ public class ChatService {
     @Transactional(readOnly = true)
     public List<ChatInfoRes> findPagingList(String workspaceUrl, String channelName, Long perPage, Long page) {
         Channel channel = findChannel(workspaceUrl, channelName);
-        return chatComponent.findPagingList(channel.getId(), perPage, page);
+        return chatComponent.findPagingList(channel.getId(), perPage, page).stream()
+                .map(ChatMapper.INSTANCE::fromEntity)
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -37,12 +41,13 @@ public class ChatService {
     }
 
     @Transactional
-    public void post(String workspaceUrl, String channelName, Long memberId, PostChatReq request) {
+    public ChatInfoRes post(String workspaceUrl, String channelName, Long memberId, PostChatReq request) {
         Channel channel = findChannel(workspaceUrl, channelName);
 
         User user = userRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
-        chatComponent.post(channel, user, request.getContent());
+        ChannelChat post = chatComponent.post(channel, user, request.getContent());
+        return ChatMapper.INSTANCE.fromEntity(post);
     }
 
     private Channel findChannel(String workspaceUrl, String channelName) {

@@ -31,7 +31,7 @@ public class Dm extends BaseDate {
     @Lob
     @NotBlank
     @Column(nullable = false)
-    String text;
+    String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_id", referencedColumnName = "id")
@@ -46,8 +46,8 @@ public class Dm extends BaseDate {
     User receiver;
 
     @Builder(builderClassName = "createBuilder", builderMethodName = "createBuilder")
-    public Dm(String text, Workspace workspace, User sender, User receiver) {
-        this.text = text;
+    public Dm(String content, Workspace workspace, User sender, User receiver) {
+        this.content = content;
         this.workspace = workspace;
         this.sender = sender;
         this.receiver = receiver;
