@@ -1,10 +1,10 @@
 package cj.task.sleact.restdocs.core;
 
 import cj.task.sleact.config.auth.SecurityConfig;
-import cj.task.sleact.core.workspace.controller.ChatController;
-import cj.task.sleact.core.workspace.controller.dto.response.ChatInfoRes;
-import cj.task.sleact.core.workspace.service.ChatService;
-import cj.task.sleact.core.workspace.service.UploadService;
+import cj.task.sleact.core.chat.controller.ChatController;
+import cj.task.sleact.core.chat.controller.response.ChatInfoRes;
+import cj.task.sleact.core.chat.service.ChatService;
+import cj.task.sleact.core.chat.service.UploadService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

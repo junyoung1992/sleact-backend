@@ -4,6 +4,7 @@ import cj.task.sleact.common.constants.ApiUrlConstants;
 import cj.task.sleact.config.auth.LoginUser;
 import cj.task.sleact.config.auth.dto.SessionUser;
 import cj.task.sleact.core.workspace.controller.dto.request.CreateWorkspaceReq;
+import cj.task.sleact.core.workspace.controller.dto.request.InviteWorkspaceMemberReq;
 import cj.task.sleact.core.workspace.controller.dto.response.WorkspaceInfoRes;
 import cj.task.sleact.core.workspace.controller.dto.response.WorkspaceMemberRes;
 import cj.task.sleact.core.workspace.service.WorkspaceService;
@@ -44,6 +45,11 @@ public class WorkspaceController {
     public WorkspaceMemberRes getMemberInfo(@PathVariable(value = "workspace") String workspaceUrl,
                                             @PathVariable(value = "member") Long memberId) {
         return workspaceService.findMemberInfo(workspaceUrl, memberId);
+    }
+
+    @PostMapping(value = ApiUrlConstants.Workspace.WORKSPACE_MEMBERS)
+    public void inviteMember(@PathVariable(value = "workspace") String workspaceUrl,
+                             @RequestBody @Valid InviteWorkspaceMemberReq body) {
     }
 
 }

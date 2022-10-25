@@ -1,7 +1,7 @@
 package cj.task.sleact.core.workspace.service;
 
 import cj.task.sleact.config.auth.dto.SessionUser;
-import cj.task.sleact.core.workspace.component.ChannelComponent;
+import cj.task.sleact.core.channel.component.ChannelComponent;
 import cj.task.sleact.core.workspace.component.WorkspaceComponent;
 import cj.task.sleact.core.workspace.controller.dto.request.CreateWorkspaceReq;
 import cj.task.sleact.core.workspace.controller.dto.response.WorkspaceInfoRes;
