@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -48,6 +49,9 @@ public class ChatControllerTest {
     MockMvc mockMvc;
 
     @MockBean
+    SimpMessagingTemplate simpMessagingTemplate;
+
+    @MockBean
     ChatService chatService;
 
     @MockBean
@@ -65,21 +69,21 @@ public class ChatControllerTest {
             ChatInfoRes chatInfo1 = ChatInfoRes.builder()
                     .id(3L)
                     .userId(1L)
-//                    .user(null)
+                    .username("test1")
                     .content("채팅")
                     .createdAt(LocalDateTime.now())
                     .channelId(2L)
-//                    .channel(null)
+                    .channelName("channel1")
                     .build();
 
             ChatInfoRes chatInfo2 = ChatInfoRes.builder()
                     .id(5L)
                     .userId(4L)
-//                    .user(null)
+                    .username("test2")
                     .content("채팅")
                     .createdAt(LocalDateTime.now())
                     .channelId(2L)
-//                    .channel(null)
+                    .channelName("channel1")
                     .build();
 
             List<ChatInfoRes> mockChats = List.of(chatInfo1, chatInfo2);
@@ -97,14 +101,18 @@ public class ChatControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$[0].id").value(chatInfo1.getId()))
                     .andExpect(jsonPath("$[0].userId").value(chatInfo1.getUserId()))
+                    .andExpect(jsonPath("$[0].username").value(chatInfo1.getUsername()))
                     .andExpect(jsonPath("$[0].content").value(chatInfo1.getContent()))
                     .andExpect(jsonPath("$[0].createdAt").value(chatInfo1.getCreatedAt().toString()))
                     .andExpect(jsonPath("$[0].channelId").value(chatInfo1.getChannelId()))
+                    .andExpect(jsonPath("$[0].channelName").value(chatInfo1.getChannelName()))
                     .andExpect(jsonPath("$[1].id").value(chatInfo2.getId()))
                     .andExpect(jsonPath("$[1].userId").value(chatInfo2.getUserId()))
+                    .andExpect(jsonPath("$[1].username").value(chatInfo2.getUsername()))
                     .andExpect(jsonPath("$[1].content").value(chatInfo2.getContent()))
                     .andExpect(jsonPath("$[1].createdAt").value(chatInfo2.getCreatedAt().toString()))
-                    .andExpect(jsonPath("$[1].channelId").value(chatInfo2.getChannelId()));
+                    .andExpect(jsonPath("$[1].channelId").value(chatInfo2.getChannelId()))
+                    .andExpect(jsonPath("$[1].channelName").value(chatInfo2.getChannelName()));
         }
     }
 
