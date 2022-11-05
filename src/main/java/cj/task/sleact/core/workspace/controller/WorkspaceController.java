@@ -50,6 +50,7 @@ public class WorkspaceController {
     @PostMapping(value = ApiUrlConstants.Workspace.WORKSPACE_MEMBERS)
     public void inviteMember(@PathVariable(value = "workspace") String workspaceUrl,
                              @RequestBody @Valid InviteWorkspaceMemberReq body) {
+        workspaceService.inviteMember(workspaceUrl, body.getEmail());
     }
 
 }

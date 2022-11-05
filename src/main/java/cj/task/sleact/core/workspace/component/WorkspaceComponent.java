@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class WorkspaceComponent {
 
-    private final WorkspaceRepository workspaceRepository;
     private final UserRepository userRepository;
+    private final WorkspaceRepository workspaceRepository;
     private final WorkspaceMemberRepository workspaceMemberRepository;
 
     public Workspace findWorkspaceByUrl(String workspaceUrl) {
@@ -41,6 +41,18 @@ public class WorkspaceComponent {
         workspaceMemberRepository.save(newWorkspaceMember);
 
         return newWorkspace;
+    }
+
+    public void addUserToWorkspace(Workspace workspace, User user) {
+        WorkspaceMember workspaceMember = WorkspaceMember.createBuilder()
+                .workspace(workspace)
+                .user(user)
+                .build();
+
+        workspace.getMembers().add(workspaceMember);
+        user.getWorkspaces().add(workspaceMember);
+
+        workspaceMemberRepository.save(workspaceMember);
     }
 
 }

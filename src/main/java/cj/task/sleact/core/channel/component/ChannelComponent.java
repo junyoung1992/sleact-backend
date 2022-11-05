@@ -23,13 +23,13 @@ public class ChannelComponent {
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 채널입니다."));
     }
 
-    public Channel createChannelWith(Workspace workspace, Long userId) {
+    public Channel createChannelWith(Workspace workspace, Long userId, String channelName) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
 
         Channel newChannel = Channel.createBuilder()
                 .workspace(workspace)
-                .name("일반")
+                .name(channelName)
                 .build();
 
         ChannelMember newChannelMember = ChannelMember.createBuilder()
@@ -41,6 +41,18 @@ public class ChannelComponent {
         channelMemberRepository.save(newChannelMember);
 
         return newChannel;
+    }
+
+    public void addUserToChannel(Channel channel, User user) {
+        ChannelMember channelMember = ChannelMember.createBuilder()
+                .channel(channel)
+                .user(user)
+                .build();
+
+        channel.getMembers().add(channelMember);
+        user.getChannels().add(channelMember);
+
+        channelMemberRepository.save(channelMember);
     }
 
 }

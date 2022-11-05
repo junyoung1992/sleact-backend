@@ -39,12 +39,16 @@ public class ChannelService {
 
     @Transactional(readOnly = true)
     public ChannelInfoRes findChannelInfoBy(String workspaceUrl, String channelName) {
-        return ChannelMapper.INSTANCE.fromEntity(findChannel(workspaceUrl, channelName));
+        workspaceComponent.findWorkspaceByUrl(workspaceUrl);
+        Channel channel = channelComponent.findByWorkspaceUrlAndChannelName(workspaceUrl, channelName);
+        return ChannelMapper.INSTANCE.fromEntity(channel);
     }
 
     @Transactional(readOnly = true)
     public List<ChannelMemberRes> findMembersInChannel(String workspaceUrl, String channelName) {
-        Channel channel = findChannel(workspaceUrl, channelName);
+        workspaceComponent.findWorkspaceByUrl(workspaceUrl);
+        Channel channel = channelComponent.findByWorkspaceUrlAndChannelName(workspaceUrl, channelName);
+
         List<User> members = userRepository.findAllInChannel(channel.getId());
         return ChannelMemberRes.fromEntity(members);
     }
@@ -60,12 +64,17 @@ public class ChannelService {
         }
 
         return ChannelMapper.INSTANCE.fromEntity(
-                channelComponent.createChannelWith(findWorkspace, userId));
+                channelComponent.createChannelWith(findWorkspace, userId, request.getName()));
     }
 
-    private Channel findChannel(String workspaceUrl, String channelName) {
-        workspaceComponent.findWorkspaceByUrl(workspaceUrl);
-        return channelComponent.findByWorkspaceUrlAndChannelName(workspaceUrl, channelName);
+    @Transactional
+    public void inviteMember(String workspaceUrl, String channelName, String email) {
+        Workspace workspace = workspaceComponent.findWorkspaceByUrl(workspaceUrl);
+        Channel channel = channelComponent.findByWorkspaceUrlAndChannelName(workspaceUrl, channelName);
+        User user = userRepository.findOneByEmailAndWorkspaceId(email, workspace.getId())
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
+
+        channelComponent.addUserToChannel(channel, user);
     }
 
 }

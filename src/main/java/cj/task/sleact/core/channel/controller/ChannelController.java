@@ -4,6 +4,7 @@ import cj.task.sleact.common.constants.ApiUrlConstants;
 import cj.task.sleact.config.auth.LoginUser;
 import cj.task.sleact.config.auth.dto.SessionUser;
 import cj.task.sleact.core.channel.controller.dto.request.CreateChannelReq;
+import cj.task.sleact.core.channel.controller.dto.request.InviteChannelMemberReq;
 import cj.task.sleact.core.channel.controller.dto.response.ChannelInfoRes;
 import cj.task.sleact.core.channel.controller.dto.response.ChannelMemberRes;
 import cj.task.sleact.core.channel.service.ChannelService;
@@ -48,6 +49,13 @@ public class ChannelController {
     public List<ChannelMemberRes> getMembersInChannel(@PathVariable(value = "workspace") String workspaceUrl,
                                                       @PathVariable(value = "channel") String channelName) {
         return channelService.findMembersInChannel(workspaceUrl, channelName);
+    }
+
+    @PostMapping(value = ApiUrlConstants.Workspace.CHANNEL_MEMBERS)
+    public void inviteMember(@PathVariable(value = "workspace") String workspaceUrl,
+                             @PathVariable(value = "channel") String channelName,
+                             @RequestBody @Valid InviteChannelMemberReq body) {
+        channelService.inviteMember(workspaceUrl, channelName, body.getEmail());
     }
 
 }

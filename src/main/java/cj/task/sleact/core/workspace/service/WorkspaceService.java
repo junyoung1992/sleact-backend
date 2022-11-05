@@ -7,6 +7,7 @@ import cj.task.sleact.core.workspace.controller.dto.request.CreateWorkspaceReq;
 import cj.task.sleact.core.workspace.controller.dto.response.WorkspaceInfoRes;
 import cj.task.sleact.core.workspace.controller.dto.response.WorkspaceMemberRes;
 import cj.task.sleact.core.workspace.mapper.WorkspaceMapper;
+import cj.task.sleact.entity.Channel;
 import cj.task.sleact.entity.User;
 import cj.task.sleact.entity.Workspace;
 import cj.task.sleact.repository.UserRepository;
@@ -58,9 +59,20 @@ public class WorkspaceService {
                 });
 
         Workspace newWorkspace = workspaceComponent.createWorkspaceWith(request.getWorkspace(), request.getUrl(), userId);
-        channelComponent.createChannelWith(newWorkspace, userId);
+        channelComponent.createChannelWith(newWorkspace, userId, "일반");
 
         return WorkspaceMapper.INSTANCE.fromEntity(newWorkspace);
+    }
+
+    @Transactional
+    public void inviteMember(String workspaceUrl, String email) {
+        Workspace workspace = workspaceComponent.findWorkspaceByUrl(workspaceUrl);
+        Channel defaultChannel = workspace.getChannels().get(0);
+        User user = userRepository.findOneByEmail(email)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
+
+        workspaceComponent.addUserToWorkspace(workspace, user);
+        channelComponent.addUserToChannel(defaultChannel, user);
     }
 
 }
