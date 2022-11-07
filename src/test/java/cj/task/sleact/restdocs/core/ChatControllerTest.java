@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static cj.task.sleact.common.constants.ApiUrlConstants.Workspace.BASE_URL;
@@ -103,14 +104,14 @@ public class ChatControllerTest {
                     .andExpect(jsonPath("$[0].userId").value(chatInfo1.getUserId()))
                     .andExpect(jsonPath("$[0].username").value(chatInfo1.getUsername()))
                     .andExpect(jsonPath("$[0].content").value(chatInfo1.getContent()))
-                    .andExpect(jsonPath("$[0].createdAt").value(chatInfo1.getCreatedAt().toString()))
+                    .andExpect(jsonPath("$[0].createdAt").value(chatInfo1.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))))
                     .andExpect(jsonPath("$[0].channelId").value(chatInfo1.getChannelId()))
                     .andExpect(jsonPath("$[0].channelName").value(chatInfo1.getChannelName()))
                     .andExpect(jsonPath("$[1].id").value(chatInfo2.getId()))
                     .andExpect(jsonPath("$[1].userId").value(chatInfo2.getUserId()))
                     .andExpect(jsonPath("$[1].username").value(chatInfo2.getUsername()))
                     .andExpect(jsonPath("$[1].content").value(chatInfo2.getContent()))
-                    .andExpect(jsonPath("$[1].createdAt").value(chatInfo2.getCreatedAt().toString()))
+                    .andExpect(jsonPath("$[1].createdAt").value(chatInfo2.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))))
                     .andExpect(jsonPath("$[1].channelId").value(chatInfo2.getChannelId()))
                     .andExpect(jsonPath("$[1].channelName").value(chatInfo2.getChannelName()));
         }

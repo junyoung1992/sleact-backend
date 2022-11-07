@@ -1,10 +1,10 @@
 package cj.task.sleact.core.chat.controller.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -18,8 +18,7 @@ public class DMInfoRes {
     final String senderName;
     final String senderEmail;
     final Long receiverId;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     final LocalDateTime createdAt;
 
     @Builder

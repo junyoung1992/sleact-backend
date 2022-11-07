@@ -22,3 +22,6 @@ spring:
 logging:
   level:
     org.hibernate.type.descriptor.sql: debug
+
+oauth2:
+  redirectUrl: http://localhost:3090
