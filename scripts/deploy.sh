@@ -15,5 +15,5 @@ echo "> deploy new app"
 cd /deploy/backend
 JAR_NAME=$(ls | grep $PROJECT_NAME | tail -n 1)
 
-nohup java -jar $JAR_NAME 1>nohup/stdout.txt 2>nohup/stderr.txt &
+nohup java -jar $JAR_NAME --spring.profiles.active=dev  1>nohup/stdout.txt 2>nohup/stderr.txt &
 sleep 2

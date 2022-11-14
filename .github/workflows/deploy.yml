@@ -15,6 +15,14 @@ jobs:
         with:
           java-version: '17'
           distribution: 'adopt'
+      - name: Make properties
+        run: |
+          cd ./src/main/resources
+          echo $APPLICATION_DEV >> application-dev.yml
+          echo $APPLICATION_OAUTH >> application-dev.yml
+        env:
+          APPLICATION_DEV: ${{ secrets.APPLICATION_DEV }}
+          APPLICATION_OAUTH: ${{ secrets.APPLICATION_OAUTH }}
       - name: Build with Gradle
         run: ./gradlew clean build
       - name: Transfer script
@@ -40,6 +48,6 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
+          key: ${{ secrets.SSH_PEM_KEY }}
           script_stop: true
           script: chmod +x /deploy/backend/deploy.sh && sh /deploy/backend/deploy.sh
