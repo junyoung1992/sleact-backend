@@ -42,4 +42,5 @@ out/
 
 **/resources/static/docs/
 
+application-dev.yml
 application-oauth.yml
