@@ -20,6 +20,8 @@ jobs:
           cd ./src/main/resources
           echo $APPLICATION_DEV >> application-dev.yml
           echo $APPLICATION_OAUTH >> application-oauth.yml
+          cat application-dev.yml
+          cat application-oauth.yml
         env:
           APPLICATION_DEV: ${{ secrets.APPLICATION_DEV }}
           APPLICATION_OAUTH: ${{ secrets.APPLICATION_OAUTH }}
