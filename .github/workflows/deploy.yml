@@ -19,7 +19,7 @@ jobs:
         run: |
           cd ./src/main/resources
           echo $APPLICATION_DEV >> application-dev.yml
-          echo $APPLICATION_OAUTH >> application-dev.yml
+          echo $APPLICATION_OAUTH >> application-oauth.yml
         env:
           APPLICATION_DEV: ${{ secrets.APPLICATION_DEV }}
           APPLICATION_OAUTH: ${{ secrets.APPLICATION_OAUTH }}
@@ -33,7 +33,7 @@ jobs:
           key: ${{ secrets.SSH_PEM_KEY }}
           source: "./scripts/deploy.sh"
           target: "/deploy/backend"
-          strip_components: 1
+          strip_components: 2
       - name: Transfer jar
         uses: appleboy/scp-action@master
         with:
