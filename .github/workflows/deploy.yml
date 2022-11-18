@@ -16,9 +16,15 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
       - name: Make properties
+        use: microsoft/variable-substitution@v1
+        with:
+          files: ./src/main/resources/application-dev.yml
         env:
-          APPLICATION_DEV: ${{ secrets.APPLICATION_DEV }}
-          APPLICATION_OAUTH: ${{ secrets.APPLICATION_OAUTH }}
+          spring.datasource.username: ${{ secrets.MYSQL_USERNAME }}
+          spring.datasource.password: ${{ secrets.MYSQL_PASSWORD }}
+          spring.security.oauth2.client.registration.google.client-id: ${{ secrets.OAUTH2_GOOGLE_CLIENT_ID }}
+          spring.security.oauth2.client.registration.google.client-secret: ${{ secrets.OAUTH2_GOOGLE_CLIENT_SECRET }}
+          spring.security.oauth2.client.registration.google.scope: ${{ secrets.OAUTH2_GOOGLE_SCOPE }}
         run: |
           echo $APPLICATION_DEV > ./src/main/resources/application-dev.yml
           echo $APPLICATION_OAUTH > ./src/main/resources/application-oauth.yml
