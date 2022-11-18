@@ -1,5 +1,5 @@
 #!/bin/bash
-PROJECT_NAME=Study-AWS
+PROJECT_NAME=sleact
 CURRENT_PID=$(pgrep -f $PROJECT_NAME)
 
 if [ -z $CURRENT_PID ]; then
