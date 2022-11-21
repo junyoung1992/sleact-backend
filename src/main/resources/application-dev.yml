@@ -23,3 +23,7 @@ spring:
 
 oauth2:
   redirectUrl: http://3.39.151.81
+
+sentry:
+  dsn: ${sentry_dsn}
+  traces-sample-rate: 1.0

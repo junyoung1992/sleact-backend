@@ -25,6 +25,7 @@ jobs:
           spring.security.oauth2.client.registration.google.client-id: ${{ secrets.OAUTH2_GOOGLE_CLIENT_ID }}
           spring.security.oauth2.client.registration.google.client-secret: ${{ secrets.OAUTH2_GOOGLE_CLIENT_SECRET }}
           spring.security.oauth2.client.registration.google.scope: ${{ secrets.OAUTH2_GOOGLE_SCOPE }}
+          sentry.dsn: ${{ secrets.SENTRY_DSN }}
       - name: Build with Gradle
         run: ./gradlew clean build
       - name: Transfer script
