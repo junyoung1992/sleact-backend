@@ -1,17 +1,22 @@
 package cj.task.sleact.core.workspace.controller;
 
 import cj.task.sleact.common.constants.ApiUrlConstants;
-import cj.task.sleact.core.workspace.dto.request.CreateWorkspaceHttpReq;
-import cj.task.sleact.core.workspace.dto.response.WorkspaceInfoRes;
-import cj.task.sleact.core.workspace.mapper.WorkspaceMapper;
+import cj.task.sleact.config.auth.LoginUser;
+import cj.task.sleact.config.auth.dto.SessionUser;
+import cj.task.sleact.core.workspace.controller.dto.request.CreateWorkspaceReq;
+import cj.task.sleact.core.workspace.controller.dto.request.InviteWorkspaceMemberReq;
+import cj.task.sleact.core.workspace.controller.dto.response.WorkspaceInfoRes;
+import cj.task.sleact.core.workspace.controller.dto.response.WorkspaceMemberRes;
 import cj.task.sleact.core.workspace.service.WorkspaceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,16 +27,30 @@ public class WorkspaceController {
     private final WorkspaceService workspaceService;
 
     @GetMapping
-    public List<WorkspaceInfoRes> getWorkspaceInfoByUserId() {
-        Long userId = 1L;
-        return workspaceService.findWorkspaceInfoByUserId(userId);
+    public List<WorkspaceInfoRes> getWorkspacesByUserId(@LoginUser SessionUser user) {
+        return workspaceService.findWorkspacesBy(user);
     }
 
     @PostMapping
-    public WorkspaceInfoRes createWorkspace(@RequestBody CreateWorkspaceHttpReq body) {
-        Long userId = 1L;
-        return workspaceService.createWorkspaceWith(
-                WorkspaceMapper.INSTANCE.fromHttpReq(body, userId));
+    public WorkspaceInfoRes createWorkspace(@LoginUser SessionUser user, @RequestBody @Valid CreateWorkspaceReq body) {
+        return workspaceService.createWorkspaceWith(body, user.getId());
+    }
+
+    @GetMapping(value = ApiUrlConstants.Workspace.WORKSPACE_MEMBERS)
+    public List<WorkspaceMemberRes> getMembersInWorkspace(@PathVariable(value = "workspace") String workspaceUrl) {
+        return workspaceService.findMembersInWorkspace(workspaceUrl);
+    }
+
+    @GetMapping(value = ApiUrlConstants.Workspace.WORKSPACE_A_MEMBER)
+    public WorkspaceMemberRes getMemberInfo(@PathVariable(value = "workspace") String workspaceUrl,
+                                            @PathVariable(value = "member") Long memberId) {
+        return workspaceService.findMemberInfo(workspaceUrl, memberId);
+    }
+
+    @PostMapping(value = ApiUrlConstants.Workspace.WORKSPACE_MEMBERS)
+    public void inviteMember(@PathVariable(value = "workspace") String workspaceUrl,
+                             @RequestBody @Valid InviteWorkspaceMemberReq body) {
+        workspaceService.inviteMember(workspaceUrl, body.getEmail());
     }
 
 }

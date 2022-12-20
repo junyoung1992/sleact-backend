@@ -1,15 +1,17 @@
 package cj.task.sleact.core.workspace.service;
 
-import cj.task.sleact.core.channel.repositoryservice.ChannelRepositoryService;
-import cj.task.sleact.core.workspace.dto.request.CreateWorkspaceReq;
-import cj.task.sleact.core.workspace.dto.response.WorkspaceInfoRes;
+import cj.task.sleact.config.auth.dto.SessionUser;
+import cj.task.sleact.core.channel.component.ChannelComponent;
+import cj.task.sleact.core.workspace.component.WorkspaceComponent;
+import cj.task.sleact.core.workspace.controller.dto.request.CreateWorkspaceReq;
+import cj.task.sleact.core.workspace.controller.dto.response.WorkspaceInfoRes;
+import cj.task.sleact.core.workspace.controller.dto.response.WorkspaceMemberRes;
 import cj.task.sleact.core.workspace.mapper.WorkspaceMapper;
-import cj.task.sleact.core.workspace.repositoryservice.WorkspaceRepositoryService;
-import cj.task.sleact.persistence.entity.Channel;
-import cj.task.sleact.persistence.entity.User;
-import cj.task.sleact.persistence.entity.Workspace;
-import cj.task.sleact.persistence.repository.UserRepository;
-import cj.task.sleact.persistence.repository.WorkspaceRepository;
+import cj.task.sleact.entity.Channel;
+import cj.task.sleact.entity.User;
+import cj.task.sleact.entity.Workspace;
+import cj.task.sleact.repository.UserRepository;
+import cj.task.sleact.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,32 +24,55 @@ import java.util.stream.Collectors;
 public class WorkspaceService {
 
     private final WorkspaceRepository workspaceRepository;
+    private final WorkspaceComponent workspaceComponent;
+    private final ChannelComponent channelComponent;
     private final UserRepository userRepository;
-    private final WorkspaceRepositoryService workspaceRepositoryService;
-    private final ChannelRepositoryService channelRepositoryService;
 
 
     @Transactional(readOnly = true)
-    public List<WorkspaceInfoRes> findWorkspaceInfoByUserId(Long userId) {
-        return workspaceRepository.findAllByMemberId(userId).stream()
+    public List<WorkspaceInfoRes> findWorkspacesBy(SessionUser user) {
+        return workspaceRepository.findAllByMemberId(user.getId()).stream()
                 .map(WorkspaceMapper.INSTANCE::fromEntity)
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public List<WorkspaceMemberRes> findMembersInWorkspace(String workspaceUrl) {
+        Workspace workspace = workspaceComponent.findWorkspaceByUrl(workspaceUrl);
+        List<User> members = userRepository.findAllInWorkspace(workspace.getId());
+        return WorkspaceMemberRes.fromEntity(members);
+    }
+
+    @Transactional(readOnly = true)
+    public WorkspaceMemberRes findMemberInfo(String workspaceUrl, Long memberId) {
+        Workspace workspace = workspaceComponent.findWorkspaceByUrl(workspaceUrl);
+        User user = userRepository.findOneByUserIdAndWorkspaceId(memberId, workspace.getId())
+                .orElseThrow(() -> new RuntimeException("해당 사용자는 존재하지 않습니다."));
+        return WorkspaceMapper.INSTANCE.fromEntity(user);
+    }
+
     @Transactional
-    public WorkspaceInfoRes createWorkspaceWith(CreateWorkspaceReq request) {
+    public WorkspaceInfoRes createWorkspaceWith(CreateWorkspaceReq request, Long userId) {
         workspaceRepository.findOneByUrl(request.getUrl())
                 .ifPresent(x -> {
                     throw new RuntimeException("사용중인 워크스페이스 URL입니다.");
                 });
 
-        User owner = userRepository.findById(request.getUserId())
-                .orElseThrow();
-
-        Workspace newWorkspace = workspaceRepositoryService.createWorkspaceWith(request.getWorkspace(), request.getUrl(), owner);
-        Channel newChannel = channelRepositoryService.createChannelWith(owner, newWorkspace);
+        Workspace newWorkspace = workspaceComponent.createWorkspaceWith(request.getWorkspace(), request.getUrl(), userId);
+        channelComponent.createChannelWith(newWorkspace, userId, "일반");
 
         return WorkspaceMapper.INSTANCE.fromEntity(newWorkspace);
+    }
+
+    @Transactional
+    public void inviteMember(String workspaceUrl, String email) {
+        Workspace workspace = workspaceComponent.findWorkspaceByUrl(workspaceUrl);
+        Channel defaultChannel = workspace.getChannels().get(0);
+        User user = userRepository.findOneByEmail(email)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
+
+        workspaceComponent.addUserToWorkspace(workspace, user);
+        channelComponent.addUserToChannel(defaultChannel, user);
     }
 
 }

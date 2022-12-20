@@ -5,6 +5,10 @@ plugins {
     id 'com.epages.restdocs-api-spec' version '0.16.0'
 }
 
+jar {
+    enabled = false
+}
+
 group = 'cj.task'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
@@ -22,15 +26,28 @@ repositories {
 dependencies {
     // spring boot
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // monitoring
+    implementation 'io.sentry:sentry-spring-boot-starter:6.7.1'
+    implementation 'io.sentry:sentry-logback:6.7.1'
+
+    // websocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    // security
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     testImplementation 'org.springframework.security:spring-security-test'
 
     // database
     runtimeOnly 'mysql:mysql-connector-java'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.0'
+    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.1'
+
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.session:spring-session-data-redis'
 
     // lombok
     compileOnly 'org.projectlombok:lombok'
@@ -40,12 +57,12 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
 
     // mapstruct
-    implementation 'org.mapstruct:mapstruct:1.5.2.Final'
-    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.2.Final'
-    testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.5.2.Final'
+    implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+    testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
 
     // swagger + restdocs
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.10'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.12'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.16.2'
 }
@@ -66,12 +83,19 @@ openapi3 {
         serverDomain = ""
     }
 
+    server = serverDomain
     title = 'Sleact API Docs'
     description = 'Sleact API Docs'
     version = '1.0.0'
     format = 'json'
-    outputFileNamePrefix = 'Sleact_API_Docs'
+    outputFileNamePrefix = 'api'
     tagDescriptionsPropertiesFile = 'src/docs/tag-descriptions.yml'
+    oauth2SecuritySchemeDefinition = {
+        flows = ['authorizationCode']
+        tokenUrl = 'https://www.googleapis.com/oauth2/v4/token'
+        authorizationUrl = 'https://accounts.google.com/o/oauth2/v2/auth'
+        scopeDescriptionsPropertiesFile = 'src/docs/scope-descriptions.yml'
+    }
 }
 
 tasks.register('copyRestDocs') {
